@@ -17,6 +17,10 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        'poppins': ["Poppins"],
+        'nunito': ['Nunito Sans'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
