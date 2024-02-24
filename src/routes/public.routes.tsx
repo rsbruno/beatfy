@@ -5,7 +5,7 @@ export function PublicRoutes() {
   return (
     <Routes>
       <Route>
-        <Route path="/" element={<HomePage />} />;
+        <Route path="" element={<HomePage />} />;
       </Route>
     </Routes>
   );
