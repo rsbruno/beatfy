@@ -14,6 +14,7 @@ export type AuthorizateUserWithSpotifyProps = {
   token_type: string;
   expires_in: number;
   scope: string;
+  access_token: string;
 };
 
 const authorizateUserWithSpotify = async (code: string) => {

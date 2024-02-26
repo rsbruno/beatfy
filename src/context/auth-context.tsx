@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -11,9 +19,14 @@ import { Button } from "@/components/ui/button";
 import { Loading } from "@/components/ui/loading";
 import { SmilleMusic } from "@/assets/svgs/smille-music";
 import { ErrorFigure } from "@/assets/svgs/error-figure";
+import { spotifyAxiosInstance } from "@/services/spotify-instance";
+import { userServices } from "@/services/user";
+import { GetCurrentUserProfileProps } from "@/@types/user/get-current-profile";
+
+type UserDataProps = GetCurrentUserProfileProps & AuthorizateUserWithSpotifyProps;
 
 type AuthContextData = {
-  user: AuthorizateUserWithSpotifyProps | null;
+  user: UserDataProps | null;
 };
 
 const AuthContext = createContext({} as AuthContextData);
@@ -23,21 +36,27 @@ function AuthProvider() {
 
   const [cookies, setCookie] = useCookies(["@beatfy:user"]);
 
-  const [user, setUser] = useState<AuthorizateUserWithSpotifyProps | null>(null);
+  const [user, setUser] = useState<UserDataProps | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const spotifyCodeAuthorization = searchParams.get("code");
 
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  const refreshUserData = useCallback((user: AuthorizateUserWithSpotifyProps | null) => {
-    if (user) {
-      setSearchParams(searchParams);
-      setCookie("@beatfy:user", user, { path: "/" });
-      setUser(user);
-    }
-  }, []);
+  const refreshUserData = useCallback(
+    async (tokens: UserDataProps | null) => {
+      if (tokens && tokens.access_token) {
+        setSearchParams(searchParams);
+        if (!cookies["@beatfy:user"]) setCookie("@beatfy:user", tokens, { path: "/" });
+        spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${tokens.access_token}`;
+        const userProfile = await userServices.getUserProfile();
+        setUser({
+          ...tokens,
+          ...userProfile,
+        });
+      }
+    },
+    [cookies["@beatfy:user"]]
+  );
 
   const trySigninWithSpotify = useCallback(async () => {
     try {
@@ -56,17 +75,13 @@ function AuthProvider() {
       if (tokens && searchParams.has("code")) {
         searchParams.delete("code");
         setSearchParams(searchParams);
-        refreshUserData({ ...tokens });
+        refreshUserData({ ...(tokens as UserDataProps) });
       }
     } catch (error) {
       handleEnqueueSnackToast(error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
-
-  const toggleDialogSignin = useCallback(() => {
-    setOpenDialog((prevState) => !prevState);
   }, []);
 
   const HandleDescriptionCase = useCallback(() => {
@@ -106,9 +121,13 @@ function AuthProvider() {
     })();
   }, [spotifyCodeAuthorization]);
 
+  useLayoutEffect(() => {
+    refreshUserData(cookies["@beatfy:user"]);
+  }, [cookies["@beatfy:user"]]);
+
   return (
     <AuthContext.Provider value={{ user }}>
-      <Dialog open={modalUserAuthenticateState ?? openDialog} onOpenChange={toggleDialogSignin}>
+      <Dialog open={modalUserAuthenticateState}>
         <DialogContent className="!rounded-2xl !border-slate-500">
           <aside className="h-[70vh] rounded-2xl flex flex-col relative overflow-hidden">
             <Loading isLoading={isLoading} />
