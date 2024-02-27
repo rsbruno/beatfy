@@ -1,19 +1,11 @@
 interface SVGComponentProps {
   width?: string | number;
   height?: string | number;
-  primaryElement?: {
-    fill?: string;
-    strokeWidth?: string;
-    stroke?: string;
-  };
-  secondaryElement?: {
-    fill?: string;
-    strokeWidth?: string;
-    stroke?: string;
-  };
+  strokeWidth?: string;
+  stroke?: string;
 }
 
-export function HomeIcon({ width, height, primaryElement, secondaryElement }: SVGComponentProps) {
+export function HomeIcon({ width, height, stroke, strokeWidth }: SVGComponentProps) {
   return (
     <svg
       width={width}
@@ -23,20 +15,30 @@ export function HomeIcon({ width, height, primaryElement, secondaryElement }: SV
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M9.02 4.83992L3.63 9.03992C2.73 9.73992 2 11.2299 2 12.3599V19.7699C2 22.0899 3.89 23.9899 6.21 23.9899H17.79C20.11 23.9899 22 22.0899 22 19.7799V12.4999C22 11.2899 21.19 9.73992 20.2 9.04992L14.02 4.71992C12.62 3.73992 10.37 3.78992 9.02 4.83992Z"
-        fill={secondaryElement?.fill}
-      />
-      <path
-        d="M11.02 2.83992L5.63 7.03992C4.73 7.73992 4 9.22992 4 10.3599V17.7699C4 20.0899 5.89 21.9899 8.21 21.9899H19.79C22.11 21.9899 24 20.0899 24 17.7799V10.4999C24 9.28992 23.19 7.73992 22.2 7.04992L16.02 2.71992C14.62 1.73992 12.37 1.78992 11.02 2.83992Z"
-        stroke={primaryElement?.stroke}
-        strokeWidth={primaryElement?.strokeWidth}
+        d="M22 10.9V4.1C22 2.6 21.36 2 19.77 2H15.73C14.14 2 13.5 2.6 13.5 4.1V10.9C13.5 12.4 14.14 13 15.73 13H19.77C21.36 13 22 12.4 22 10.9Z"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M14 17.99V14.99"
-        stroke={primaryElement?.stroke}
-        strokeWidth={primaryElement?.strokeWidth}
+        d="M22 19.9V18.1C22 16.6 21.36 16 19.77 16H15.73C14.14 16 13.5 16.6 13.5 18.1V19.9C13.5 21.4 14.14 22 15.73 22H19.77C21.36 22 22 21.4 22 19.9Z"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.5 13.1V19.9C10.5 21.4 9.86 22 8.27 22H4.23C2.64 22 2 21.4 2 19.9V13.1C2 11.6 2.64 11 4.23 11H8.27C9.86 11 10.5 11.6 10.5 13.1Z"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.5 4.1V5.9C10.5 7.4 9.86 8 8.27 8H4.23C2.64 8 2 7.4 2 5.9V4.1C2 2.6 2.64 2 4.23 2H8.27C9.86 2 10.5 2.6 10.5 4.1Z"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
