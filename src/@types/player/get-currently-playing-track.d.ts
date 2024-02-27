@@ -5,6 +5,7 @@ export interface GetCurrentlyPlayingTrack {
   timestamp: number;
   context: null;
   progress_ms: number;
+  duration: MsToTimerProps | null;
   item: {
     album: {
       album_type: string;

@@ -6,16 +6,21 @@ interface TrackArtistNameProps {
 }
 
 export default function TrackArtistName({ name }: TrackArtistNameProps) {
-  const { crrTrack } = usePlayer();
+  const { track } = usePlayer();
 
   const artistName = useMemo(() => {
-    if (crrTrack?.item?.artists.length)
-      return crrTrack?.item?.artists.map((artist) => artist.name).join(" | ");
+    if (track?.item?.artists.length)
+      return track?.item?.artists.map((artist) => artist.name).join(" | ");
     else name;
-  }, [crrTrack, name]);
+  }, [track, name]);
 
   return (
-    <small className="leading-3 whitespace-nowrap overflow-hidden text-ellipsis font-regular text-white text-[12px]">
+    <small
+      className={`
+        leading-3 whitespace-nowrap overflow-hidden text-ellipsis font-regular text-white text-[12px] w-full h-[14px]
+        ${!track ? "animate-pulse bg-rose-700" : ""}
+    `}
+    >
       {artistName}
     </small>
   );

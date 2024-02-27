@@ -38,4 +38,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  .pulse-loading {
+    @apply animate-pulse opacity-30 rounded-[3px];
+  }
 }

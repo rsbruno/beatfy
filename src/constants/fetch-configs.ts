@@ -1,0 +1,5 @@
+const REVALIDATE_DATA_IN_10_MIN = 1000 * 60 * 10;
+
+export const FETCH_CONFIGS = {
+  REVALIDATE_DATA_IN_10_MIN,
+};
