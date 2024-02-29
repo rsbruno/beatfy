@@ -10,7 +10,7 @@ export function useBeatfyFetch<T>(
   fetchFn: FetchFunction<T>,
   options?: UseQueryOptions<T, Error>
 ): UseQueryResult<T, Error> {
-  const user = useAuth();
+  const { user, trySigninRefreshToken } = useAuth();
 
   const queryResults = useQuery([queryKey, user], fetchFn, {
     refetchOnWindowFocus: true,
@@ -19,9 +19,11 @@ export function useBeatfyFetch<T>(
   } as any);
 
   useEffect(() => {
-    if (!!spotifyAxiosInstance.defaults.headers["Authorization"]) {
-      queryResults.refetch();
-    }
-  }, [spotifyAxiosInstance.defaults.headers["Authorization"]]);
+    const unixTimeInSeconds = Math.floor(Date.now() / 1000);
+    const experided_in = user?.expires_in ?? 0;
+    const token = spotifyAxiosInstance.defaults.headers["Authorization"];
+    if (experided_in > unixTimeInSeconds && !!token) queryResults.refetch();
+    else trySigninRefreshToken();
+  }, [spotifyAxiosInstance.defaults.headers["Authorization"], user]);
   return queryResults as any;
 }

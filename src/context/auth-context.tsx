@@ -27,6 +27,7 @@ type UserDataProps = GetCurrentUserProfileProps & AuthorizateUserWithSpotifyProp
 
 type AuthContextData = {
   user: UserDataProps | null;
+  trySigninRefreshToken: () => Promise<void>;
 };
 
 const AuthContext = createContext({} as AuthContextData);
@@ -34,7 +35,7 @@ const AuthContext = createContext({} as AuthContextData);
 function AuthProvider() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [cookies, setCookie] = useCookies(["@beatfy:user"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["@beatfy:user"]);
 
   const [user, setUser] = useState<UserDataProps | null>(null);
 
@@ -46,13 +47,19 @@ function AuthProvider() {
     async (tokens: UserDataProps | null) => {
       if (tokens && tokens.access_token) {
         setSearchParams(searchParams);
-        if (!cookies["@beatfy:user"]) setCookie("@beatfy:user", tokens, { path: "/" });
-        spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${tokens.access_token}`;
-        const userProfile = await userServices.getUserProfile();
-        setUser({
-          ...tokens,
-          ...userProfile,
-        });
+        const unixTimeInSeconds = Math.floor(Date.now() / 1000);
+        if (!cookies["@beatfy:user"]) {
+          tokens.expires_in += unixTimeInSeconds;
+          setCookie("@beatfy:user", tokens, { path: "/" });
+        }
+        if (tokens.expires_in !== 0 && tokens.expires_in > unixTimeInSeconds) {
+          spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${tokens.access_token}`;
+          const userProfile = await userServices.getUserProfile();
+          setUser({
+            ...tokens,
+            ...userProfile,
+          });
+        }
       }
     },
     [cookies["@beatfy:user"]]
@@ -67,6 +74,27 @@ function AuthProvider() {
       handleEnqueueSnackToast(error);
     }
   }, []);
+
+  let apiCount = 0;
+  const trySigninRefreshToken = useCallback(async () => {
+    ++apiCount;
+    if (apiCount > 1 || !user) return;
+    try {
+      const unixTimeInSeconds = Math.floor(Date.now() / 1000);
+      const { access_token, expires_in, refresh_token, scope, token_type } =
+        await authServices.refreshSpotifyToken(user.refresh_token);
+      setUser((prev) => ({
+        ...prev!,
+        expires_in: unixTimeInSeconds + expires_in,
+        refresh_token,
+        access_token,
+        token_type,
+        scope,
+      }));
+    } catch (error) {
+      removeCookie("@beatfy:user");
+    }
+  }, [user]);
 
   const tryAuthorizateUserWithSpotify = useCallback(async (code: string) => {
     try {
@@ -126,7 +154,7 @@ function AuthProvider() {
   }, [cookies["@beatfy:user"]]);
 
   return (
-    <AuthContext.Provider value={{ user }}>
+    <AuthContext.Provider value={{ user, trySigninRefreshToken }}>
       <Dialog open={modalUserAuthenticateState}>
         <DialogContent className="!rounded-2xl !border-slate-500">
           <aside className="h-[70vh] rounded-2xl flex flex-col relative overflow-hidden">
