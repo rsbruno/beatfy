@@ -49,8 +49,9 @@ function PlayerProvider() {
   }, [response]);
 
   useEffect(() => {
-    if (track === null || trackProgress?.duration_ms! >= response?.data.item.duration_ms!)
+    if (track === null || trackProgress?.duration_ms! >= response?.data.item.duration_ms!) {
       refetch();
+    }
   }, [trackProgress]);
 
   return (

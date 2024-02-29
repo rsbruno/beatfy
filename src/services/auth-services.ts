@@ -29,4 +29,28 @@ const authorizateUserWithSpotify = async (code: string) => {
   return data;
 };
 
-export const authServices = { singinWithSpotifyToken, authorizateUserWithSpotify };
+type RefreshTokenSpotifyProps = {
+  refresh_token: string;
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  scope: string;
+};
+
+const refreshSpotifyToken = async (token: string) => {
+  const { data } = await bffAxiosInstance.get<RefreshTokenSpotifyProps>(
+    "/auth/spotify/refresh-token",
+    {
+      params: {
+        refresh_token: token,
+      },
+    }
+  );
+  return data;
+};
+
+export const authServices = {
+  authorizateUserWithSpotify,
+  singinWithSpotifyToken,
+  refreshSpotifyToken,
+};
