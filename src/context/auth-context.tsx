@@ -49,17 +49,15 @@ function AuthProvider() {
         setSearchParams(searchParams);
         const unixTimeInSeconds = Math.floor(Date.now() / 1000);
         if (!cookies["@beatfy:user"]) {
-          tokens.expires_in += unixTimeInSeconds;
+          tokens.expires_in = unixTimeInSeconds + tokens.expires_in * 0.95;
           setCookie("@beatfy:user", tokens, { path: "/" });
         }
-        if (tokens.expires_in !== 0 && tokens.expires_in > unixTimeInSeconds) {
-          spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${tokens.access_token}`;
-          const userProfile = await userServices.getUserProfile();
-          setUser({
-            ...tokens,
-            ...userProfile,
-          });
-        }
+        spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${tokens.access_token}`;
+        const userProfile = await userServices.getUserProfile();
+        setUser({
+          ...tokens,
+          ...userProfile,
+        });
       }
     },
     [cookies["@beatfy:user"]]
@@ -83,14 +81,17 @@ function AuthProvider() {
       const unixTimeInSeconds = Math.floor(Date.now() / 1000);
       const { access_token, expires_in, refresh_token, scope, token_type } =
         await authServices.refreshSpotifyToken(user.refresh_token);
-      setUser((prev) => ({
-        ...prev!,
-        expires_in: unixTimeInSeconds + expires_in,
-        refresh_token,
-        access_token,
-        token_type,
-        scope,
-      }));
+      spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${access_token}`;
+      if (user) {
+        setUser((prev) => ({
+          ...prev!,
+          expires_in: unixTimeInSeconds + expires_in,
+          refresh_token,
+          access_token,
+          token_type,
+          scope,
+        }));
+      }
     } catch (error) {
       removeCookie("@beatfy:user");
     }

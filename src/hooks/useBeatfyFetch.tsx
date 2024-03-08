@@ -24,6 +24,6 @@ export function useBeatfyFetch<T>(
     const token = spotifyAxiosInstance.defaults.headers["Authorization"];
     if (experided_in > unixTimeInSeconds && !!token) queryResults.refetch();
     else trySigninRefreshToken();
-  }, [spotifyAxiosInstance.defaults.headers["Authorization"], user]);
+  }, [user]);
   return queryResults as any;
 }

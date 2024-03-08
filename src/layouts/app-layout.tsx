@@ -1,23 +1,11 @@
-import { NextIcon } from "@/assets/icons/next-icon";
-import { PauseIcon } from "@/assets/icons/pause-icon";
-import { PlayIcon } from "@/assets/icons/play-icon";
-import { PrevIcon } from "@/assets/icons/prev-icon";
 import { Navigation } from "@/components/navigation";
-import { Player } from "@/components/player";
 import { PlayList } from "@/components/playlists";
-import { User } from "@/components/user";
-import { usePlayer } from "@/context/player-context";
 import { menuItems } from "@/routes/public.routes";
-import { useMemo } from "react";
+import { Player } from "@/components/player";
+import { User } from "@/components/user";
+import { Outlet } from "react-router-dom";
 
 export function AppLayout() {
-  const { track } = usePlayer();
-
-  const iconButtonPlayPause = useMemo(() => {
-    if (track?.is_playing) return <PauseIcon stroke="#e11d48" width={24} />;
-    return <PlayIcon stroke="#e11d48" width={22} />;
-  }, [track]);
-
   return (
     <section className="w-screen h-screen flex bg-[#000]">
       <aside className="w-72 h-full p-5 pt-12 flex flex-col gap-3">
@@ -68,22 +56,13 @@ export function AppLayout() {
                   <Player.TrackArtistName />
                 </section>
               </main>
-              <footer className="flex justify-center items-center">
-                <Player.ControlButton
-                  variant="ghost"
-                  icon={<PrevIcon stroke="#fff" width={18} />}
-                />
-                <Player.ControlButton icon={iconButtonPlayPause} variant="primary" />
-                <Player.ControlButton
-                  variant="ghost"
-                  icon={<NextIcon stroke="#fff" width={18} />}
-                />
-              </footer>
             </section>
           </aside>
         </footer>
       </aside>
-      <main className="flex-1 bg-[#242424] m-3 ml-0 rounded-xl p-3"></main>
+      <main className="flex-1 bg-[#242424] m-3 ml-0 rounded-xl p-3 flex flex-col">
+        <Outlet />
+      </main>
     </section>
   );
 }
