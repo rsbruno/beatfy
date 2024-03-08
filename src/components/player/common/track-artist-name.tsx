@@ -3,9 +3,10 @@ import { useMemo } from "react";
 
 interface TrackArtistNameProps {
   name?: string;
+  center?: boolean;
 }
 
-export default function TrackArtistName({ name }: TrackArtistNameProps) {
+export default function TrackArtistName({ name, center = false }: TrackArtistNameProps) {
   const { track } = usePlayer();
 
   const artistName = useMemo(() => {
@@ -17,8 +18,8 @@ export default function TrackArtistName({ name }: TrackArtistNameProps) {
   return (
     <small
       className={`
-        leading-3 whitespace-nowrap overflow-hidden text-ellipsis font-regular text-white text-[12px] w-full h-[14px]
-        ${!track ? "animate-pulse bg-rose-700" : ""}
+        block leading-3 whitespace-nowrap overflow-hidden text-ellipsis font-regular text-white w-max text-[12px] h-[14px]
+        ${!track ? "animate-pulse bg-rose-700" : ""} ${center ? "text-center mx-auto" : "text-left"}
     `}
     >
       {artistName}
