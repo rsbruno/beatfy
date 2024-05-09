@@ -6,11 +6,13 @@ import { MsToTimerProps, msToTimer } from "@/lib/time";
 import { playerServices } from "@/services/player";
 import { userServices } from "@/services/user";
 import { Outlet } from "react-router-dom";
+import { GetUsersTopItems } from "@/@types/user/get-users-top-items";
 
 type PlayerContextData = {
   track: GetCurrentlyPlayingTrack | null;
   trackProgress: MsToTimerProps | null;
   recommendations: Recommendation[];
+  topTracks: GetUsersTopItems | undefined;
 };
 
 const PlayerContext = createContext({} as PlayerContextData);
@@ -43,10 +45,12 @@ function PlayerProvider() {
     playerServices.getCurrentlyPlayingTrack
   );
 
+  const { data: topTracks } = useBeatfyFetch("users-top-tracks", userServices.getUsersTopItems);
+
   const tryGetRecommendationsByCurrentTrack = useCallback(async () => {
     if (!track) return;
     const { data } = await userServices.getRecommendations({
-      limit: 6,
+      limit: 5,
       market: "BR",
       seed_artists: track?.item.artists.map((artist) => artist.id).join(",") ?? "",
       seed_genres: "Agronejo",
@@ -80,7 +84,7 @@ function PlayerProvider() {
   }, [track, lastId]);
 
   return (
-    <PlayerContext.Provider value={{ track, trackProgress, recommendations }}>
+    <PlayerContext.Provider value={{ track, trackProgress, recommendations, topTracks }}>
       <Outlet />
     </PlayerContext.Provider>
   );

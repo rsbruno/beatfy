@@ -22,12 +22,14 @@ import { ErrorFigure } from "@/assets/svgs/error-figure";
 import { spotifyAxiosInstance } from "@/services/spotify-instance";
 import { userServices } from "@/services/user";
 import { GetCurrentUserProfileProps } from "@/@types/user/get-current-profile";
+import { Device } from "@/services/user/user-available-devices";
 
 type UserDataProps = GetCurrentUserProfileProps & AuthorizateUserWithSpotifyProps;
 
 type AuthContextData = {
-  user: UserDataProps | null;
   trySigninRefreshToken: () => Promise<void>;
+  user: UserDataProps | null;
+  devices: Device[];
 };
 
 const AuthContext = createContext({} as AuthContextData);
@@ -42,6 +44,8 @@ function AuthProvider() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const spotifyCodeAuthorization = searchParams.get("code");
+
+  const [devices, setDevices] = useState<Device[]>([]);
 
   const refreshUserData = useCallback(
     async (tokens: UserDataProps | null) => {
@@ -150,12 +154,19 @@ function AuthProvider() {
     })();
   }, [spotifyCodeAuthorization]);
 
+  useEffect(() => {
+    (async () => {
+      const response = await userServices.getAvailableDevices();
+      setDevices(response?.devices ?? []);
+    })();
+  }, []);
+
   useLayoutEffect(() => {
     refreshUserData(cookies["@beatfy:user"]);
   }, [cookies["@beatfy:user"]]);
 
   return (
-    <AuthContext.Provider value={{ user, trySigninRefreshToken }}>
+    <AuthContext.Provider value={{ user, trySigninRefreshToken, devices }}>
       <Dialog open={modalUserAuthenticateState}>
         <DialogContent className="!rounded-2xl !border-slate-500">
           <aside className="h-[70vh] rounded-2xl flex flex-col relative overflow-hidden">
