@@ -1,18 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { GetCurrentlyPlayingTrack } from "@/@types/player/get-currently-playing-track";
-import { Recommendation } from "@/@types/user/recomendations";
 import { useBeatfyFetch } from "@/hooks/useBeatfyFetch";
 import { MsToTimerProps, msToTimer } from "@/lib/time";
 import { playerServices } from "@/services/player";
-import { userServices } from "@/services/user";
 import { Outlet } from "react-router-dom";
-import { GetUsersTopItems } from "@/@types/user/get-users-top-items";
 
 type PlayerContextData = {
   track: GetCurrentlyPlayingTrack | null;
   trackProgress: MsToTimerProps | null;
-  recommendations: Recommendation[];
-  topTracks: GetUsersTopItems | undefined;
 };
 
 const PlayerContext = createContext({} as PlayerContextData);
@@ -25,10 +20,6 @@ function PlayerProvider() {
   const [track, setTrack] = useState<GetCurrentlyPlayingTrack | null>(null);
 
   const [trackProgress, setTrackProgress] = useState<MsToTimerProps | null>(null);
-
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-
-  const [lastId, setLastId] = useState<string>("");
 
   const counterProgress = useCallback(
     (prev: MsToTimerProps | null, crrTrack: GetCurrentlyPlayingTrack | null) => {
@@ -45,20 +36,6 @@ function PlayerProvider() {
     playerServices.getCurrentlyPlayingTrack
   );
 
-  const { data: topTracks } = useBeatfyFetch("users-top-tracks", userServices.getUsersTopItems);
-
-  const tryGetRecommendationsByCurrentTrack = useCallback(async () => {
-    if (!track) return;
-    const { data } = await userServices.getRecommendations({
-      limit: 5,
-      market: "BR",
-      seed_artists: track?.item.artists.map((artist) => artist.id).join(",") ?? "",
-      seed_genres: "Agronejo",
-      seed_tracks: track?.item.id ?? "",
-    });
-    setRecommendations(data.tracks);
-  }, [track]);
-
   useEffect(() => {
     if (response?.status === 200 && response.data.item !== null) {
       for (let index = 0; index < SECOND_MS; index++) clearInterval(index);
@@ -73,18 +50,11 @@ function PlayerProvider() {
 
   useEffect(() => {
     if (track === null || trackProgress?.duration_ms! >= response?.data.item.duration_ms!)
-      refetch();
+      refetch?.();
   }, [trackProgress]);
 
-  useEffect(() => {
-    if (track?.item.id !== lastId) {
-      tryGetRecommendationsByCurrentTrack();
-      setLastId(track?.item.id!);
-    }
-  }, [track, lastId]);
-
   return (
-    <PlayerContext.Provider value={{ track, trackProgress, recommendations, topTracks }}>
+    <PlayerContext.Provider value={{ track, trackProgress }}>
       <Outlet />
     </PlayerContext.Provider>
   );
