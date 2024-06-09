@@ -12,7 +12,6 @@ export default function TrackProgressBar() {
   return (
     <Progress
       className={`bg-rose-700 h-[5px] ${!track ? "animate-pulse" : ""}`}
-      indicatorColor="bg-white"
       value={percentProgress}
     />
   );

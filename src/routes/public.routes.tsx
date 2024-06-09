@@ -1,6 +1,5 @@
 import { HomeIcon } from "@/assets/icons/home-icon";
 import { SearchIcon } from "@/assets/icons/search-icon";
-import { PlayerProvider } from "@/context/player-context";
 import { HomePage } from "@/pages/[public]";
 import { ElementType } from "react";
 import { Route, Routes } from "react-router-dom";

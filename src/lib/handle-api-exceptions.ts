@@ -1,4 +1,3 @@
-import { bffAxiosInstance } from "@/services/bff-axios-instance";
 import { OptionsObject, enqueueSnackbar as notistackEnqueueSnackbar } from "notistack";
 
 type HandleApiMessageProps = {
@@ -33,7 +32,7 @@ export const handleEnqueueSnackToast = (error: any) => {
   const axiosError = ["Network Error"];
   const { message, statusCode, name } = handleApiMessages(error);
   if (Number(statusCode) === 401) {
-    bffAxiosInstance.defaults.headers.common["Authorization"] = "";
+    console.log("401")
   } else if (axiosError.find((f) => f == name))
     enqueueSnackbar("Erro ao tentar se conectar no servidor!", { variant: "error" });
   else
