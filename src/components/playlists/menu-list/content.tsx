@@ -24,7 +24,7 @@ export default function PlaylistMenuListContent({
   const iconColor = useMemo(() => (active ? "#e11d48" : "#fff"), [active]);
 
   return (
-    <li className="flex w-60 justify-between items-center gap-3 py-1 rounded-lg hover:px-[px] transition-all ease-linear duration-300 cursor-pointer">
+    <li className="flex w-60 justify-between items-center gap-3 py-1 rounded-lg transition-all ease-linear duration-300 cursor-pointer">
       <div className={isLoading ? "pulse-loading" : ""}>
         <PlayListIcon stroke={iconColor} width="20" height="20" />
       </div>
