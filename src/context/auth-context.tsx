@@ -2,16 +2,15 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { Outlet, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { GetCurrentUserProfileProps } from "@/@types/user/get-current-profile";
-import { Device } from "@/services/user/user-available-devices";
 import { DialogLogin } from "@/components/login/dialog-login";
 import { spotifyServices } from "@/services/spotify";
+import { userServices } from "@/services/user";
+import { spotifyAxiosInstance } from "@/services/spotify-instance";
 
 type UserDataProps = GetCurrentUserProfileProps;
 
 type AuthContextData = {
-  trySigninRefreshToken: () => Promise<void>;
   user: UserDataProps | null;
-  devices: Device[];
 };
 
 const AuthContext = createContext({} as AuthContextData);
@@ -21,28 +20,30 @@ function AuthProvider() {
 
   const [cookies, setCookie] = useCookies(["@beatfy:user"]);
 
-  const [user] = useState<UserDataProps | null>(null);
+  const [user, setUser] = useState<UserDataProps | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const spotifyAuthorizationCode = searchParams.get("code");
 
-  const [devices] = useState<Device[]>([]);
+  const authCookie = useMemo(() => cookies["@beatfy:user"], [cookies["@beatfy:user"]]);
 
-  const trySigninRefreshToken = useCallback(async () => {}, [user]);
+  const tryGetCurrentUserProfile = useCallback(async () => {
+    try {
+      if (authCookie) {
+        const userMeResponse = await userServices.getUserProfile();
+        setUser(userMeResponse);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }, [authCookie]);
 
   const trySigninWithSpotify = useCallback(async () => {
     setIsLoading(true);
     const redirectTo = spotifyServices.signinWithSpotify();
     window.location.replace(redirectTo);
   }, []);
-
-  const spotifyAuthenticationCookie = useMemo(() => {
-    const cookie = cookies["@beatfy:user"];
-    /* if (cookie?.access_token) */
-    /* spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${cookie?.access_token}`; */
-    return !Boolean(cookie);
-  }, [cookies["@beatfy:user"]]);
 
   async function trySpotifyAuthorizationCode(code: string) {
     try {
@@ -58,6 +59,18 @@ function AuthProvider() {
     }
   }
 
+  const updateSpotifyAxiosInstanceToken = (token: string) => {
+    if (authCookie && !spotifyAxiosInstance.defaults.headers["Authorization"])
+      spotifyAxiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
+  };
+
+  useEffect(() => {
+    (async () => {
+      updateSpotifyAxiosInstanceToken(authCookie);
+      await tryGetCurrentUserProfile();
+    })();
+  }, [authCookie]);
+
   useEffect(() => {
     (async () => {
       if (spotifyAuthorizationCode) trySpotifyAuthorizationCode(spotifyAuthorizationCode);
@@ -65,11 +78,11 @@ function AuthProvider() {
   }, [spotifyAuthorizationCode]);
 
   return (
-    <AuthContext.Provider value={{ user, trySigninRefreshToken, devices }}>
+    <AuthContext.Provider value={{ user }}>
       <DialogLogin
-        isLoading={isLoading}
-        open={spotifyAuthenticationCookie}
         trySigninWithSpotify={trySigninWithSpotify}
+        isLoading={isLoading}
+        open={!authCookie}
       />
       <Outlet />
     </AuthContext.Provider>

@@ -15,8 +15,8 @@ export default function UserFollowers() {
   }, [user, user?.followers.total]);
   return (
     <small
-      className={`text-gray-400 text-[12px] mt-2 h-[15px] w-32 ${
-        !user ? "pulse-loading bg-gray-500 block overflow-hidden" : ""
+      className={`text-gray-400 text-[12px] mt-2 h-[16px] w-32 ${
+        !user ? "pulse-loading bg-gray-500 block overflow-hidden w-3/4" : ""
       }`}
     >
       {followersText}

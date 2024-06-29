@@ -1,40 +1,26 @@
-import { ComputerIcon } from "@/assets/icons/computer-icon";
 import { NextIcon } from "@/assets/icons/next-icon";
 import { PauseIcon } from "@/assets/icons/pause-icon";
 import { PlayIcon } from "@/assets/icons/play-icon";
 import { PrevIcon } from "@/assets/icons/prev-icon";
-import { SpeakerIcon } from "@/assets/icons/speaker-icon";
 import { Player } from "@/components/player";
-import { useAuth } from "@/context/auth-context";
 import { usePlayer } from "@/context/player-context";
-import { Device } from "@/services/user/user-available-devices";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 export function HomePage() {
   const { track } = usePlayer();
-  const { devices } = useAuth();
   const iconButtonPlayPause = useMemo(() => {
     if (track?.is_playing) return <PauseIcon stroke="#e11d48" width={24} />;
     return <PlayIcon stroke="#e11d48" width={22} />;
   }, [track]);
-
-  const HandleIconDevice = useCallback(({ device }: { device: Device }) => {
-    switch (device.type) {
-      case "Speaker":
-        return <SpeakerIcon stroke="#fff" width={22} strokeWidth="2" />;
-      default:
-        return <ComputerIcon stroke="#fff" width={22} strokeWidth="2" />;
-    }
-  }, []);
 
   return (
     <section className="flex-1 flex justify-end rounded-xl">
       <aside className="flex flex-col flex-1 pr-5">
         <section className="flex justify-end">
           <div className="flex w-min gap-2 items-center justify-center">
-            {devices.map((device) => (
+            {/*  {devices.map((device) => (
               <HandleIconDevice key={device.id} device={device} />
-            ))}
+            ))} */}
           </div>
         </section>
       </aside>

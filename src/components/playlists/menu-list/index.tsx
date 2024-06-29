@@ -2,20 +2,24 @@ import { ReactNode } from "react";
 import {
   GetCurrentUserPlaylists,
   PlaylistsProps,
-} from "@/@types/playlists/get-current-user-playlists";
-import { playlistServices } from "@/services/playlists";
+  } from "@/@types/playlists/get-current-user-playlists";
+import { FETCH_CONFIGS } from "@/constants/fetch-configs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBeatfyFetch } from "@/hooks/useBeatfyFetch";
+import { playlistServices } from "@/services/playlists";
 import { Skeleton } from "@/components/skeleton";
 import { PlayList } from "..";
-import { useBeatfyFetch } from "@/hooks/useBeatfyFetch";
-import { FETCH_CONFIGS } from "@/constants/fetch-configs";
 
 interface PlaylistMenuListProps {
   renderComponent: (props: PlaylistsProps) => ReactNode;
 }
 
 export default function PlaylistMenuList({ renderComponent }: PlaylistMenuListProps) {
-  const { data: playlists, isFetching } = useBeatfyFetch<GetCurrentUserPlaylists>(
+  const {
+    data: playlists,
+    isLoading,
+    isIdle,
+  } = useBeatfyFetch<GetCurrentUserPlaylists>(
     "user-playlists",
     playlistServices.getCurrentUserPlaylists,
     {
@@ -25,17 +29,17 @@ export default function PlaylistMenuList({ renderComponent }: PlaylistMenuListPr
   );
 
   return (
-    <ScrollArea className="h-52 w-60 rounded-md">
-      <ul className="overflow-hidden">
+    <ScrollArea className="h-full w-full rounded-md">
+      <ul className="py-2">
         <Skeleton
-          isLoading={isFetching}
-          repeat={5}
+          isLoading={isIdle || isLoading}
+          repeat={15}
           fallBackComponent={(key) => (
             <PlayList.MenuListContent
-              ownerName={""}
               tracksAmount={0}
-              isLoading
+              ownerName=""
               images={[]}
+              isLoading
               key={key}
             />
           )}
