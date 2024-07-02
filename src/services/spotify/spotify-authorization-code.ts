@@ -1,11 +1,6 @@
+import { TokenProps } from "@/@types/auth";
 import { Buffer } from "buffer";
 import axios from "axios";
-import { handleApiMessages } from "@/lib/handle-api-exceptions";
-
-interface SpotifyTokenProps {
-  refresh_token: string;
-  access_token: string;
-}
 
 export const spotifyAuthorizationCode = async (code: string) => {
   const payloadAuth = {
@@ -26,17 +21,7 @@ export const spotifyAuthorizationCode = async (code: string) => {
         ).toString("base64"),
     },
   };
-  try {
-    const {
-      data: { access_token, refresh_token },
-    } = await axios.post<SpotifyTokenProps>(payloadAuth.url, payloadAuth.form, {
-      headers: payloadAuth.headers,
-    });
-    return {
-      refresh_token,
-      access_token,
-    } as SpotifyTokenProps;
-  } catch (error) {
-    handleApiMessages(error);
-  }
+  return await axios.post<TokenProps>(payloadAuth.url, payloadAuth.form, {
+    headers: payloadAuth.headers,
+  });
 };

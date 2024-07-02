@@ -1,22 +1,13 @@
-export interface GetCurrentUserProfileProps {
+import { ImageProps } from "../image";
+
+export interface MeProps {
   display_name: string;
   external_urls: {
     spotify: string;
   };
   href: string;
   id: string;
-  images: [
-    {
-      url: string;
-      height: number;
-      width: number;
-    },
-    {
-      url: string;
-      height: number;
-      width: number;
-    }
-  ];
+  images: ImageProps[];
   type: string;
   uri: string;
   followers: {
@@ -26,8 +17,8 @@ export interface GetCurrentUserProfileProps {
   country: string;
   product: string;
   explicit_content: {
-    filter_enabled: false;
-    filter_locked: false;
+    filter_enabled: boolean;
+    filter_locked: boolean;
   };
   email: string;
 }

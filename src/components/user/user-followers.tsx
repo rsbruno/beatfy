@@ -8,7 +8,7 @@ export default function UserFollowers() {
       case user && user?.followers.total > 0:
         return `${user?.followers.total} - seguidores`;
       case user && user?.followers?.total === 0:
-        return "Você ainda não tem seguidores";
+        return "Você não tem seguidores";
       default:
         return "";
     }

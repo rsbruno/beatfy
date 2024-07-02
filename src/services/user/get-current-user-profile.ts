@@ -1,8 +1,8 @@
+import { MeProps } from "@/@types/user/me";
 import { spotifyAxiosInstance } from "../spotify-instance";
 
 const getCurrentUserProfile = async () => {
-  const { data } = await spotifyAxiosInstance.get<any>(`v1/me`);
-  return data;
+  return await spotifyAxiosInstance.get<MeProps>(`v1/me`);
 };
 
 export default getCurrentUserProfile;

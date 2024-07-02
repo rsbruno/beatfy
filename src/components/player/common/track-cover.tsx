@@ -13,7 +13,7 @@ export default function TrackCover({}: TrackCoverProps) {
 
   return (
     <div
-      className={`size-14 bg-rose-700 rounded-xl overflow-hidden ${!track ? "animate-pulse" : ""}`}
+      className={`size-14 bg-rose-700 rounded-[8px] overflow-hidden ${!track ? "animate-pulse" : ""}`}
     >
       {track && <img src={uriCoverTrack} alt={track?.item.album.name} />}
     </div>

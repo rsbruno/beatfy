@@ -8,7 +8,7 @@ export function AppLayout() {
   const { user } = useAuth();
   return (
     <section className="w-screen h-screen flex bg-[#000]">
-      <aside className="w-72 h-full p-5 pr-1 pt-12 flex flex-col">
+      <div className="w-72 h-full p-5 pr-1 pt-12 flex flex-col">
         <aside className="pr-5">
           <User.UserAvatar />
           <div className="mt-3">
@@ -16,19 +16,21 @@ export function AppLayout() {
             <User.UserFollowers />
           </div>
         </aside>
-        <main className="flex-1 flex flex-col overflow-auto mt-3">
-          <Navigation.Title isLoading={!user} title="Biblioteca" />
-          <PlayList.MenuList
-            renderComponent={({ name, tracks, owner, images, id }) => (
-              <PlayList.MenuListContent
-                ownerName={owner.display_name}
-                tracksAmount={tracks.total}
-                images={images}
-                name={name}
-                key={id}
-              />
-            )}
-          />
+        <main className="flex-1 flex flex-col overflow-auto mt-3 relative">
+          <Navigation.Title isLoading={!user} title="Biblioteca" className="sticky top-0" />
+          <div className="overflow-auto pb-1 mb-5">
+            <PlayList.MenuList
+              renderComponent={({ name, tracks, owner, images, id }) => (
+                <PlayList.MenuListContent
+                  ownerName={owner.display_name}
+                  tracksAmount={tracks.total}
+                  images={images}
+                  name={name}
+                  key={id}
+                />
+              )}
+            />
+          </div>
         </main>
         <footer>
           <aside className="w-full h-min pr-5">
@@ -48,7 +50,7 @@ export function AppLayout() {
             </section>
           </aside>
         </footer>
-      </aside>
+      </div>
       <main className="flex-1 bg-[#242424] m-3 ml-0 rounded-xl p-3 flex flex-col">
         {/*      <Outlet /> */}
       </main>
