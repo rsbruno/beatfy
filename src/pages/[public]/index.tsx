@@ -1,11 +1,3 @@
-import { NextIcon } from "@/assets/icons/next-icon";
-import { PauseIcon } from "@/assets/icons/pause-icon";
-import { PlayIcon } from "@/assets/icons/play-icon";
-import { PrevIcon } from "@/assets/icons/prev-icon";
-import { Player } from "@/components/player";
-import { usePlayer } from "@/context/player-context";
-import { useMemo } from "react";
-
 export function HomePage() {
   /*   const { track } = usePlayer();
   const iconButtonPlayPause = useMemo(() => {
@@ -24,7 +16,7 @@ export function HomePage() {
           </div>
         </section>
       </aside>
-   {/*    <section className="flex flex-col justify-end items-end w-72 ">
+      {/*    <section className="flex flex-col justify-end items-end w-72 ">
         <main className="w-full flex flex-1 flex-col"></main>
         <footer className="w-full flex flex-col h-min bg-rose-600 rounded-xl p-3 gap-3">
           <header className="w-full h-min bg-rose-700 rounded-xl overflow-hidden">

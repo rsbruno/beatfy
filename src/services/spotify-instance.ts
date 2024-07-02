@@ -1,13 +1,11 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Cookies } from "react-cookie";
-import { spotifyServices } from "./spotify";
-import { SpotifyRefreshTokenProps } from "./spotify/refresh-token-spotify";
 import { TokenProps } from "@/@types/auth";
 
 // Variavel para informar se está acontecendo uma requisição de refresh token
-let isRefreshing = false;
+//let isRefreshing = false;
 // Variavel para armazenar a fila de requisições que falharam por token expirado
-let failedRequestQueue: any[] = [];
+//let failedRequestQueue: any[] = [];
 
 const cookies = new Cookies();
 
