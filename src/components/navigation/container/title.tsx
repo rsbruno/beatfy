@@ -1,20 +1,20 @@
-import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { HTMLAttributes, ReactNode } from "react";
 
-export default function Title({
-  isLoading,
-  children,
-  title,
-}: {
+interface TitleProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
   isLoading?: boolean;
   title?: string;
-}) {
+}
+
+export default function Title({ isLoading, children, title }: TitleProps) {
   return (
     <div>
       <span
-        className={`text-gray-300 font-medium text-[12px] uppercase mb-3 
-       ${isLoading ? "pulse-loading bg-gray-500 overflow-hidden w-3/4 text-transparent" : ""}
-      `}
+        className={cn(
+          "text-gray-300 font-medium text-[12px] uppercase mb-3",
+          isLoading && "pulse-loading bg-gray-500 overflow-hidden w-3/4 text-transparent"
+        )}
       >
         {children ?? title}
       </span>

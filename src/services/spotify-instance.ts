@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { Cookies } from "react-cookie";
 import { spotifyServices } from "./spotify";
 import { SpotifyRefreshTokenProps } from "./spotify/refresh-token-spotify";
+import { TokenProps } from "@/@types/auth";
 
 // Variavel para informar se está acontecendo uma requisição de refresh token
 let isRefreshing = false;
@@ -10,12 +11,13 @@ let failedRequestQueue: any[] = [];
 
 const cookies = new Cookies();
 
-// Cria as configurações iniciais do Axios
+const cookieName = "@beatfy:user";
+
+const cookie: TokenProps = cookies.get(cookieName);
+
 const spotifyAxiosInstance = axios.create({
   baseURL: "https://api.spotify.com/",
-  headers: {
-    Authorization: `Bearer ${cookies.get("@beatfy:user")?.access_token ?? ""}`,
-  },
+  headers: { Authorization: cookie ? `Bearer ${cookie.access_token}` : undefined },
 });
 
 // Cria um interceptor para interceptar todas as requisições que forem feitas
@@ -23,8 +25,8 @@ spotifyAxiosInstance.interceptors.response.use(
   (response) => {
     // Se a requisição der sucesso, retorna a resposta
     return response;
-  },
-  (error: AxiosError) => {
+  }
+  /*  (error: AxiosError) => {
     // Se a requisição der erro, verifica se o erro é de autenticação
     if (error?.response?.status === 401) {
       // Se o erro for de autenticação, verifica se o erro foi de token expirado
@@ -84,7 +86,7 @@ spotifyAxiosInstance.interceptors.response.use(
         });
       });
     } else cookies.remove("@beatfy:user");
-  }
+  } */
 );
 
 export { spotifyAxiosInstance };

@@ -7,11 +7,11 @@ import { usePlayer } from "@/context/player-context";
 import { useMemo } from "react";
 
 export function HomePage() {
-  const { track } = usePlayer();
+  /*   const { track } = usePlayer();
   const iconButtonPlayPause = useMemo(() => {
     if (track?.is_playing) return <PauseIcon stroke="#e11d48" width={24} />;
     return <PlayIcon stroke="#e11d48" width={22} />;
-  }, [track]);
+  }, [track]); */
 
   return (
     <section className="flex-1 flex justify-end rounded-xl">
@@ -24,7 +24,7 @@ export function HomePage() {
           </div>
         </section>
       </aside>
-      <section className="flex flex-col justify-end items-end w-72 ">
+   {/*    <section className="flex flex-col justify-end items-end w-72 ">
         <main className="w-full flex flex-1 flex-col"></main>
         <footer className="w-full flex flex-col h-min bg-rose-600 rounded-xl p-3 gap-3">
           <header className="w-full h-min bg-rose-700 rounded-xl overflow-hidden">
@@ -47,7 +47,7 @@ export function HomePage() {
             <Player.ControlButton variant="ghost" icon={<NextIcon stroke="#fff" width={18} />} />
           </footer>
         </footer>
-      </section>
+      </section> */}
     </section>
   );
 }
