@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
-import { DialogLogin } from "@/components/login/dialog-login";
+import { DialogLogin } from "@/components/signin/dialog-login";
 import { spotifyServices } from "@/services/spotify";
 import { userServices } from "@/services/user";
 import useSyncFetch from "@/hooks/useSyncFetch";
@@ -12,7 +12,7 @@ type AuthContextData = {
   user: MeProps | null;
 };
 
-const cookieName = "@beatfy:user";
+const cookieName = `@beatfy:${import.meta.env.VITE_ENV}:user`;
 
 const AuthContext = createContext({} as AuthContextData);
 

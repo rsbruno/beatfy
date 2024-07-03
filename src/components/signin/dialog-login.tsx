@@ -1,4 +1,3 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SpotifyContent } from "./spotify-content";
 import { useSearchParams } from "react-router-dom";
 import { Loading } from "@/components/ui/loading";
@@ -6,6 +5,7 @@ import { SpotifyLogoPNG } from "@/assets/images";
 import { Button } from "@/components/ui/button";
 import { ErrorContent } from "./error-content";
 import { Show } from "../show";
+import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
 
 interface DialogLoginProps {
   trySigninWithSpotify: () => Promise<void>;
@@ -16,8 +16,8 @@ interface DialogLoginProps {
 export function DialogLogin({ open, isLoading, trySigninWithSpotify }: DialogLoginProps) {
   const [searchParams] = useSearchParams();
   return (
-    <Dialog open={open}>
-      <DialogContent className="!rounded-2xl !border-slate-500">
+    <AlertDialog open={open}>
+      <AlertDialogContent className="!rounded-2xl !border-slate-500">
         <aside className="h-[70vh] rounded-2xl flex flex-col relative overflow-hidden">
           <Loading isLoading={isLoading} />
           <div className="flex-1 flex justify-evenly items-center flex-col">
@@ -41,7 +41,7 @@ export function DialogLogin({ open, isLoading, trySigninWithSpotify }: DialogLog
             </Button>
           </footer>
         </aside>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

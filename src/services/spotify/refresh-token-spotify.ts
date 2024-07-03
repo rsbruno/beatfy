@@ -1,4 +1,3 @@
-import { handleApiMessages } from "@/lib/handle-api-exceptions";
 import { Buffer } from "buffer";
 import axios from "axios";
 
@@ -25,16 +24,7 @@ export const refreshTokenSpotify = async (token: string) => {
     },
   };
 
-  try {
-    const {
-      data: { access_token },
-    } = await axios.post<SpotifyRefreshTokenProps>(payloadAuth.url, payloadAuth.form, {
-      headers: payloadAuth.headers,
-    });
-    return {
-      access_token,
-    } as SpotifyRefreshTokenProps;
-  } catch (error) {
-    handleApiMessages(error);
-  }
+  return await axios.post<SpotifyRefreshTokenProps>(payloadAuth.url, payloadAuth.form, {
+    headers: payloadAuth.headers,
+  });
 };
