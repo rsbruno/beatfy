@@ -9,9 +9,11 @@ import { TokenProps } from "@/@types/auth";
 
 const cookies = new Cookies();
 
-const cookieName = "@beatfy:user";
+const cookieName = `@beatfy:${import.meta.env.VITE_ENV}:user`;
 
 const cookie: TokenProps = cookies.get(cookieName);
+
+console.log(cookie)
 
 const spotifyAxiosInstance = axios.create({
   baseURL: "https://api.spotify.com/",
